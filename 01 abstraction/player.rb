@@ -21,9 +21,9 @@ class Player
     end
 
     def dead?
-        if @hitpoint <= 0
-            puts "#{@name} dies"
-            return true
-        end
+        return false if @hitpoint > 0
+
+        puts "#{@name} dies"
+        true
     end
 end
