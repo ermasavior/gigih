@@ -2,9 +2,9 @@ require_relative 'player'
 require_relative 'hero'
 require_relative 'villain'
 
-jin = Hero.new("Jin Sakai", 100, 50, 0.8)
-yuna = Hero.new("Yuna", 90, 45, 0.8)
-ishihara = Hero.new("Sensei Ishihara", 80, 60, 0.8)
+jin = Hero.new("Jin Sakai", 10, 50, 0)
+yuna = Hero.new("Yuna", 9, 45, 0)
+ishihara = Hero.new("Sensei Ishihara", 8, 60, 0)
 heroes = [jin, yuna, ishihara]
 
 archer = MongolArcher.new("Mongol Archer", 80, 40, 0.5)
@@ -43,7 +43,11 @@ def main_hero_attacks_an_enemy(main_hero, villains)
     villains.delete_at(idx) if villain.flee? || villain.dead?
 end
 
-def main_hero_heals_an_ally(main_hero, allies)
+def main_hero_heals_an_ally(main_hero, heroes)
+    allies = []
+    heroes.each { |hero| allies.push(hero) if hero != main_hero }
+    return if allies.empty?
+
     puts "Which ally you want to heal"
     i = 1
     allies.each do |ally|
@@ -55,7 +59,10 @@ def main_hero_heals_an_ally(main_hero, allies)
     main_hero.heal(allies[idx])
 end
 
-def allies_attack_villains(allies, villains)
+def allies_attack_villains(main_hero, heroes, villains)
+    allies = []
+    heroes.each { |hero| allies.push(hero) if hero != main_hero }
+
     allies.each do |ally|
         hero_attack_random_villains(ally, villains)
         break if villains.empty?
@@ -82,8 +89,6 @@ def villains_attack_heroes(villains, heroes)
 end
 
 turn = 1
-allies = []
-heroes.each { |hero| allies.push(hero) if hero != jin }
 
 loop do
     puts "========= Turn #{turn} ========="
@@ -92,25 +97,31 @@ loop do
     print_players(heroes, villains)
     puts
 
-    action = choose_action_as_jin
-    puts
+    unless jin.dead?
+        action = choose_action_as_jin
+        puts
 
-    main_hero_attacks_an_enemy(jin, villains) if action == 1
-    main_hero_heals_an_ally(jin, allies) if action == 2
+        main_hero_attacks_an_enemy(jin, villains) if action == 1
+        main_hero_heals_an_ally(jin, heroes) if action == 2
+        break if villains.empty?
+        puts
+    end
+
+    allies_attack_villains(jin, heroes, villains)
     break if villains.empty?
     puts
 
-    allies_attack_villains(allies, villains)
-    break if villains.empty?
-    puts
-
-    villains_attack_heroes(villains, [jin] + allies)
+    villains_attack_heroes(villains, heroes)
     break if heroes.empty?
     puts
 
+    puts heroes
     turn += 1
 end
 
 puts
-puts "========= Heroes are Lose =========" if heroes.empty?
-puts "========= Heroes are Win =========" if villains.empty?
+if villains.empty?
+    puts "========= Heroes are Win ========="
+else
+    puts "========= Heroes are Lose ========="
+end
