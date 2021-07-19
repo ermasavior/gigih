@@ -5,8 +5,9 @@
     <input name="price" type="number" placeholder="Item price" />
 
     <select name="category_id" placeholder="Category">
-    <% categories.each_with_index do |category, index| %>
-        <option value= <%= index+1 %>><%= category %></option>
+        <option value=0>No category</option>
+    <% categories.each do |category| %>
+        <option value=<%= category.id %>><%= category.name %></option>
     <% end %>
     </select>
     <button type="submit">Add item</button>

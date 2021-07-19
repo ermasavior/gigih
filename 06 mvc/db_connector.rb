@@ -61,6 +61,8 @@ def insert_item_with_category(name, price, category_id)
     client = create_db_client
     client.query("insert into items (name, price) values ('#{name}', '#{price}')")
 
-    item_id = client.last_id
-    client.query("insert into item_categories (item_id, category_id) values ('#{item_id}', '#{category_id}')")
+    if category_id != "0"
+        item_id = client.last_id
+        client.query("insert into item_categories (item_id, category_id) values ('#{item_id}', '#{category_id}')")
+    end
 end

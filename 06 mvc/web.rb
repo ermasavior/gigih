@@ -10,6 +10,8 @@ end
 
 get '/items/new' do
     categories = get_all_categories
+    puts categories[0].id
+    puts categories[0].name
     erb :create, locals: {
         categories: categories
     }
