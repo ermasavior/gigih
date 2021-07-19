@@ -1,0 +1,13 @@
+<h1>Create new item</h1>
+
+<form method="POST" action="/items">
+    <input name="name" type="text" placeholder="Item name" />
+    <input name="price" type="number" placeholder="Item price" />
+
+    <select name="category_id" placeholder="Category">
+    <% categories.each_with_index do |category, index| %>
+        <option value= <%= index+1 %>><%= category %></option>
+    <% end %>
+    </select>
+    <button type="submit">Add item</button>
+</form>
