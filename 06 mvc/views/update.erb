@@ -1,0 +1,16 @@
+<h1>Update item</h1>
+
+<form method="POST" action="/items/<%= item.id %>/update">
+    <input name="name" type="text" placeholder="Item name" value="<%= item.name %>" />
+    <input name="price" type="number" placeholder="Item price" value="<%= item.price %>" />
+
+    <select name="category_id" placeholder="Category">
+        <option value="">No category</option>
+
+        <% categories.each do |category| %>
+            <option value=<%= category.id %>><%= category.name %></option>
+        <% end %>
+
+    </select>
+    <button type="submit">Update item</button>
+</form>

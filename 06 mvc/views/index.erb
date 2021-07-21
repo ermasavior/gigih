@@ -4,13 +4,17 @@
     <tr>
         <th>Name</th>
         <th>Price</th>
-        <th>Category</th>
+        <th></th>
+        <th></th>
+        <th></th>
     </tr>
     <% items.each do |item| %>
     <tr>
         <td><%= item.name %></td>
         <td><%= item.price %></td>
-        <td><%= item.category %></td>
+        <td><a href="/items/<%= item.id %>/show">Show</a></td>
+        <td><a href="/items/<%= item.id %>/edit">Edit</a></td>
+        <td><button href="">Delete</button></td>
     </tr>
     <% end %>
 </table>
