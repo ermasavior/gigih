@@ -56,3 +56,12 @@ post '/items/:id/update' do
 
     redirect '/'
 end
+
+post '/items/:id/delete' do
+    item_id = params['id']
+
+    item = Item.find_by_id(item_id)
+    item.delete
+
+    redirect '/'
+end

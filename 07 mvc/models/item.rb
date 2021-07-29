@@ -34,6 +34,13 @@ class Item < Model
         self
     end
 
+    def delete
+        item_category = ItemCategory.find_by_item(self)
+        item_category.delete unless item_category.nil?
+
+        Model.client.query("delete from items where id='#{@id}'")
+    end
+
     def self.create(name, price, category=nil)
         client.query("insert into items (name, price) values ('#{name}', '#{price}')")
         item_id = self.client.last_id
