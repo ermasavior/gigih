@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food OMS</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script> 
+
+    <script>
+        $(document).ready(function() {
+            $('select').val(<%= item.category.id if item.category %>)
+            $('select').material_select();
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+        <a href="/" class="brand-logo center">Food OMS</a>
+    </nav>
+    <div class="container">
+        <h3 class="center-align">Update item</h3>
+        
+        <form method="POST" action="/items/<%= item.id %>/update">
+            <input name="name" type="text" placeholder="Item name" value="<%= item.name %>" />
+            <input name="price" type="number" placeholder="Item price" value="<%= item.price %>" />
+
+            <label>Category</label>
+            <select name="category_id" placeholder="Category">
+                <option value="">no category</option>
+                <% categories.each do |category| %>
+                    <option value="<%= category.id %>"><%= category.name %></option>
+                <% end %>
+            </select>
+
+            <p class="right-align">
+                <button class="waves-effect waves-light btn-small" type="submit">Update item</button>
+            </p>
+        </form>
+    </div>
+</body>

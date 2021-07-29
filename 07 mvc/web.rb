@@ -23,6 +23,15 @@ get '/items/new' do
     }
 end
 
+get '/items/:id/edit' do
+    item = Item.find_by_id(params['id'])
+    categories = Category.find_all_categories
+
+    erb :update, locals: {
+        item: item, categories: categories
+    }
+end
+
 post '/items/create' do
     name =  params['name']
     price =  params['price']
@@ -30,6 +39,20 @@ post '/items/create' do
 
     category = Category.find_by_id(category_id)
     Item.create(name, price, category)
+
+    redirect '/'
+end
+
+post '/items/:id/update' do
+    item_id = params['id']
+    name = params['name']
+    price = params['price']
+    category_id = params['category_id'].to_i
+
+    category = Category.find_by_id(category_id)
+
+    item = Item.find_by_id(item_id)
+    item.update(name, price, category)
 
     redirect '/'
 end
