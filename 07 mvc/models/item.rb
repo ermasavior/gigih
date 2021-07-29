@@ -12,25 +12,17 @@ class Item < Model
     end
 
     def update(name, price, category)
-        Model.client.query("update items set name='#{name}', price='#{price}' where id='#{@id}'")
+        @name, @price, @category = name, price, category
+        Model.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
 
-        if category.nil?
-            @category = nil
-            item_category = ItemCategory.find_by_item(self)
-            item_category.delete unless item_category.nil?
-            return
-        end
-
+        item_category = ItemCategory.find_by_item(self)
         if @category.nil?
-            ItemCategory.create(self, category)
-        else
-            item_category = ItemCategory.find_by_item(self)
-            item_category.update(self, category)
+            item_category.delete unless item_category.nil?
+            return self
         end
+        item_category.update(self, @category) unless item_category.nil?
 
-        @name = name
-        @price = price
-        @category = category
+        ItemCategory.create(self, @category) if item_category.nil?
         self
     end
 

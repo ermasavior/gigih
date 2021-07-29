@@ -8,15 +8,9 @@ class ItemCategory < Model
         @category = category
     end
 
-    def self.create(item, category)
-        Model.client.query("insert into item_categories (item_id, category_id) values ('#{item.id}', '#{category.id}')")
+    def update(item, category)
         @item = item
         @category = category
-    end
-
-    def update(category, item)
-        @category = category
-        @item = item
 
         Model.client.query("update item_categories set category_id='#{@category.id}' where item_id='#{@item.id}'")
         self
@@ -24,6 +18,11 @@ class ItemCategory < Model
 
     def delete
         Model.client.query("delete from item_categories where item_id='#{@item.id}' and category_id='#{@category.id}'")
+    end
+
+    def self.create(item, category)
+        @item, @category = item, category
+        Model.client.query("insert into item_categories (item_id, category_id) values ('#{@item.id}', '#{@category.id}')")
     end
 
     def self.find_by_item(item)
