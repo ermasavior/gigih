@@ -1,67 +1,37 @@
 require 'sinatra'
+require_relative 'controllers/item_controller'
 require_relative 'models/item'
 require_relative 'models/category'
 
+item_controller = ItemController.new
+
 get '/' do
-    items = Item.find_all_items_with_category
-    erb :index, locals: {
-        items: items
-    }
+    item_controller.list_items
 end
 
 get '/items/:id/show' do
-    item = Item.find_by_id(params['id'])
-    erb :show, locals: {
-        item: item
-    }
+    item_controller.item_detail(params)
 end
 
 get '/items/new' do
-    categories = Category.find_all_categories
-    erb :create, locals: {
-        categories: categories
-    }
+    item_controller.create_item_form
 end
 
 get '/items/:id/edit' do
-    item = Item.find_by_id(params['id'])
-    categories = Category.find_all_categories
-
-    erb :update, locals: {
-        item: item, categories: categories
-    }
+    item_controller.update_item_form(params)
 end
 
 post '/items/create' do
-    name =  params['name']
-    price =  params['price']
-    category_id = params['category_id'].to_i
-
-    category = Category.find_by_id(category_id)
-    Item.create(name, price, category)
-
+    item_controller.create_item(params)
     redirect '/'
 end
 
 post '/items/:id/update' do
-    item_id = params['id']
-    name = params['name']
-    price = params['price']
-    category_id = params['category_id'].to_i
-
-    category = Category.find_by_id(category_id)
-
-    item = Item.find_by_id(item_id)
-    item.update(name, price, category)
-
+    item_controller.update_item(params)
     redirect '/'
 end
 
 post '/items/:id/delete' do
-    item_id = params['id']
-
-    item = Item.find_by_id(item_id)
-    item.delete
-
+    item_controller.delete_item(params)
     redirect '/'
 end
