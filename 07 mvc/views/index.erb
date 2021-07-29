@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food OMS</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script> 
+
+    <script>
+        $('.delete').on('click', function() {
+            alert('click');
+            //here would be the code to send the DELETE request ?
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+        <a href="/" class="brand-logo center">Food OMS</a>
+    </nav>
+    <div class="container">
+        <h3 class="center-align">Items</h3>
+        <p class="center-align">
+            <a class="waves-effect waves-light btn-small" href="/items/new">Add new item</a>
+        </p>
+    
+        <table class="highlight centered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.each do |item| %>
+                <tr>
+                    <td><%= item.name %></td>
+                    <td><%= item.price %></td>
+                    <td>
+                        <a href="/items/<%= item.id %>/show">Show</a>
+                    </td>
+                    <td>
+                        <a href="/items/<%= item.id %>/edit">Edit</a>
+                    </td>
+                    <td>
+                        <form action="/items/<%= item.id %>/delete" method="POST">
+                            <button type="submit" class="btn-small waves-light red">
+                                delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</body>
