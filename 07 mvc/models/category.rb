@@ -9,7 +9,7 @@ class Category < Model
     end
 
     def self.find_by_id(id)
-        raw_data = client.query("select * from categories")
+        raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
         Category.new(data["id"], data["name"]) unless data.nil?
     end

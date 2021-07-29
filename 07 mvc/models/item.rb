@@ -2,7 +2,7 @@ require_relative 'model'
 require_relative 'item_category'
 
 class Item < Model
-    attr_reader :id, :name, :price, :category
+    attr_accessor :id, :name, :price, :category
 
     def initialize(id, name, price, category=nil)
         @id = id
@@ -11,12 +11,38 @@ class Item < Model
         @category = category
     end
 
+    def update(name, price, category)
+        Model.client.query("update items set name='#{name}', price='#{price}' where id='#{@id}'")
+
+        if category.nil?
+            @category = nil
+            item_category = ItemCategory.find_by_item(self)
+            item_category.delete unless item_category.nil?
+            return
+        end
+
+        if @category.nil?
+            ItemCategory.create(self, category)
+        else
+            item_category = ItemCategory.find_by_item(self)
+            item_category.update(self, category)
+        end
+
+        @name = name
+        @price = price
+        @category = category
+        self
+    end
+
     def self.create(name, price, category=nil)
         client.query("insert into items (name, price) values ('#{name}', '#{price}')")
-        return if category.nil?
-
         item_id = self.client.last_id
-        ItemCategory.new(item_id, category.id).save
+        item = Item.new(name, price, category)
+
+        return item if category.nil?
+
+        ItemCategory.new(item, category).save
+        item
     end
 
     def self.find_by_id(id)
@@ -27,7 +53,8 @@ class Item < Model
                                  where items.id = #{id}")
         items = Array.new
         raw_data.each do |data|
-            category = Category.new(data["categories.id"], data["category_name"])
+            category = nil
+            category = Category.new(data["category_id"], data["category_name"]) unless data["category_id"].nil?
             item = Item.new(data["item_id"], data["item_name"], data["price"], category)
             items.push(item)
         end
@@ -41,7 +68,8 @@ class Item < Model
                                  left join categories on categories.id = item_categories.category_id")
         items = Array.new
         raw_data.each do |data|
-            category = Category.new(data["categories.id"], data["category_name"])
+            category = nil
+            category = Category.new(data["category_id"], data["category_name"]) unless data["category_id"].nil?
             item = Item.new(data["item_id"], data["item_name"], data["price"], category)
             items.push(item)
         end
