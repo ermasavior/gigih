@@ -1,0 +1,12 @@
+require_relative 'model'
+
+class Item < Model
+    attr_reader :id, :name, :price, :category
+
+    def initialize(id, name, price, category)
+        @id = id
+        @name = name
+        @price = price
+        @category = category
+    end
+end
