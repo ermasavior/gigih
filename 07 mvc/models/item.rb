@@ -43,7 +43,6 @@ class Item < Model
         raw_data.each do |data|
             category = Category.new(data["categories.id"], data["category_name"])
             item = Item.new(data["item_id"], data["item_name"], data["price"], category)
-            puts item.id
             items.push(item)
         end
 
