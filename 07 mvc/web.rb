@@ -7,3 +7,10 @@ get '/' do
         items: items
     }
 end
+
+get '/items/:id/show' do
+    item = Item.find_by_id(params['id'])
+    erb :show, locals: {
+        item: item
+    }
+end
