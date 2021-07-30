@@ -36,7 +36,7 @@ class Item < Model
     def self.create(name, price, category=nil)
         client.query("insert into items (name, price) values ('#{name}', '#{price}')")
         item_id = self.client.last_id
-        item = Item.new(name, price, category)
+        item = Item.new(item_id, name, price, category)
 
         return item if category.nil?
 
