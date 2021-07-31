@@ -141,11 +141,8 @@ RSpec.describe Item do
         end
 
         context 'when item has category before deletion' do
-            before do
-                expect(db_connector).to receive(:query)
-            end
-
             it 'triggers item_category deletion' do
+                expect(db_connector).to receive(:query)
                 expect(item_category).to receive(:delete)
                 item.delete
             end
