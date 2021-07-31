@@ -24,6 +24,14 @@ class Category < Model
         category
     end
 
+    def update(name)
+        @name = name
+        return unless valid?
+
+        Model.client.query("update categories set name='#{@name}' where id='#{@id}'")
+        self
+    end
+
     def self.find_by_id(id)
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first

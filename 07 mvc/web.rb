@@ -44,7 +44,16 @@ get '/categories/new' do
     category_controller.create_category_form
 end
 
+get '/categories/:id/edit' do
+    category_controller.update_category_form(params)
+end
+
 post '/categories/create' do
     category_controller.create_category(params)
+    redirect '/'
+end
+
+post '/categories/:id/update' do
+    category_controller.update_category(params)
     redirect '/'
 end
