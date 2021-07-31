@@ -71,6 +71,23 @@ class Item < Model
         items.first
     end
 
+    def self.find_by_category(category)
+        return unless category.valid?
+
+        raw_data = client.query("select items.id, items.name, items.price
+                                 from items
+                                 left join item_categories on items.id = item_categories.item_id
+                                 left join categories on categories.id = item_categories.category_id
+                                 where categories.id = #{category.id}")
+        items = Array.new
+        raw_data.each do |data|
+            item = Item.new(data["id"], data["name"], data["price"], category)
+            items.push(item)
+        end
+
+        items
+    end
+
     def self.find_all_items_with_category
         raw_data = client.query("select items.id as 'item_id', items.name as 'item_name', items.price, categories.id as 'category_id', categories.name as 'category_name'
                                  from items

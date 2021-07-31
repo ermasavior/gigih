@@ -1,11 +1,13 @@
 require_relative 'model'
+require_relative 'item'
 
 class Category < Model
-    attr_reader :id, :name
+    attr_accessor :id, :name, :items
 
-    def initialize(id, name)
+    def initialize(id, name, items=[])
         @id = id
         @name = name
+        @items = items
     end
 
     def valid?
@@ -18,6 +20,16 @@ class Category < Model
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
         Category.new(data["id"], data["name"]) unless data.nil?
+    end
+
+    def self.find_by_id_with_items(id)
+        raw_data = client.query("select * from categories where id='#{id}'")
+        data = raw_data.first
+        return if data.nil?
+
+        category = Category.new(data["id"], data["name"])
+        category.items = Item.find_by_category(category)
+        category
     end
 
     def self.find_all_categories
