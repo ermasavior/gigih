@@ -159,5 +159,15 @@ RSpec.describe Category do
     end
 
     describe '.find_all_categories' do
+        let(:expected_results) { Category.client.query("select * from categories") }
+
+        it 'returns all categories' do
+            categories = Category.find_all_categories
+
+            categories.zip(expected_results) do |category, expected|
+                expect(category.id).to eq(expected['id'])
+                expect(category.name).to eq(expected['name'])
+            end
+        end
     end
 end
