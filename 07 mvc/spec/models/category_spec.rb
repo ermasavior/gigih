@@ -18,8 +18,6 @@ RSpec.describe Category do
     end
 
     describe '.create' do
-        let(:db_connector) { double }
-
         context 'when parameters are valid' do
             let(:name) { "Street food" }
 
@@ -45,6 +43,29 @@ RSpec.describe Category do
     end
 
     describe '.update' do
+        let(:category) { Category.new(4, "snack") }
+
+        context 'when parameters are valid' do
+            let(:name) { "street food" }
+
+            it 'triggers category update query' do
+                expect(Category.client).to receive(:query)
+
+                result = category.update(name)
+                expect(result.name).to eq(name)
+            end
+        end
+
+        context 'when parameters are invalid' do
+            let(:name) { nil }
+
+            it 'does not trigger category update' do
+                expect(Category.client).not_to receive(:query)
+
+                result = category.update(name)
+                expect(result).to be(nil)
+            end
+        end
     end
 
     describe '.find_by_id' do

@@ -28,7 +28,7 @@ class Category < Model
         @name = name
         return unless valid?
 
-        Model.client.query("update categories set name='#{@name}' where id='#{@id}'")
+        Category.client.query("update categories set name='#{@name}' where id='#{@id}'")
         self
     end
 
