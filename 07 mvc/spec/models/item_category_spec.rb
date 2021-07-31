@@ -26,6 +26,29 @@ RSpec.describe ItemCategory do
     end
 
     describe '.update' do
+        let(:item) { Item.new(100, "Sate", 2000) }
+        let(:category) { Category.new(1, "main dish") }
+        let(:item_category) { ItemCategory.new(item, category) }
+
+        context 'when parameters are valid' do
+            let(:update_category) { Category.new(2, "beverage") }
+
+            it 'triggers update query' do
+                expect(ItemCategory.client).to receive(:query)
+                item_category.update(item, update_category)
+                expect(item_category.item).to eq(item)
+                expect(item_category.category).to eq(update_category)
+            end
+        end
+
+        context 'when parameters are invalid' do
+            let(:update_category) { nil }
+            
+            it 'does not trigger update query' do
+                expect(ItemCategory.client).not_to receive(:query)
+                item_category.update(item, update_category)
+            end
+        end
     end
 
     describe '.delete' do

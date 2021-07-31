@@ -20,7 +20,7 @@ class ItemCategory < Model
         @category = category
         return unless valid?
 
-        Model.client.query("update item_categories set category_id='#{@category.id}' where item_id='#{@item.id}'")
+        ItemCategory.client.query("update item_categories set category_id='#{@category.id}' where item_id='#{@item.id}'")
         self
     end
 
