@@ -1,9 +1,9 @@
 require 'sinatra'
 require_relative 'controllers/item_controller'
-require_relative 'models/item'
-require_relative 'models/category'
+require_relative 'controllers/category_controller'
 
 item_controller = ItemController.new
+category_controller = CategoryController.new
 
 get '/' do
     item_controller.list_items
@@ -34,4 +34,8 @@ end
 post '/items/:id/delete' do
     item_controller.delete_item(params)
     redirect '/'
+end
+
+get '/categories/:id/show' do
+    category_controller.category_detail(params)
 end
