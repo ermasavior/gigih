@@ -72,7 +72,7 @@ class Item < Model
     end
 
     def self.find_by_category(category)
-        return unless category.valid?
+        return [] if category.nil?
 
         raw_data = client.query("select items.id, items.name, items.price
                                  from items

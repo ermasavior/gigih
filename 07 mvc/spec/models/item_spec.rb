@@ -271,4 +271,29 @@ RSpec.describe Item do
             end
         end
     end
+
+    describe '.find_by_category' do
+        context 'when category is valid' do
+            let(:category) { Category.find_by_id(1) }
+            let(:items) { Item.client.query("select * from items left join item_categories on items.id=item_categories.item_id where category_id=1") }
+
+            it 'returns item with its category' do
+                results = Item.find_by_category(category)
+                results.zip(items) do |result, item|
+                    expect(result.name).to eq(item["name"])
+                    expect(result.price).to eq(item["price"])
+                    expect(result.category.id).to eq(item["category_id"])
+                end
+            end
+        end
+
+        context 'when category is invalid' do
+            let(:category) { nil }
+
+            it 'returns empty array' do
+                items_result = Item.find_by_category(category)
+                expect(items_result).to eq([])
+            end
+        end
+    end
 end
