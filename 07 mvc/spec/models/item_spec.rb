@@ -25,15 +25,9 @@ RSpec.describe Item do
         let(:price) { 40000 }
         let(:category) { double }
         let(:item_category) { double }
-        let(:db_connector) { double }
-
-        before do
-            allow(Model).to receive(:client).and_return(db_connector)
-        end
 
         context 'when parameters are valid' do
             before do
-                allow(db_connector).to receive(:query).and_return(double)
                 allow(ItemCategory).to receive(:find_by_item).with(item)
                     .and_return(item_category)
             end
@@ -43,8 +37,8 @@ RSpec.describe Item do
 
                 it 'returns updated item with no category' do
                     allow(item_category).to receive(:delete)
-                    expect(db_connector).to receive(:query)
 
+                    expect(Item.client).to receive(:query)
                     result = item.update(name, price, category)
 
                     expect(result.id).to eq(id)
@@ -55,7 +49,8 @@ RSpec.describe Item do
 
                 context 'when item has category before update' do
                     before do
-                        item.category = double
+                        item.category = double                
+                        allow(Item.client).to receive(:query)
                     end
 
                     it 'triggers ItemCategory deletion' do
@@ -66,6 +61,10 @@ RSpec.describe Item do
 
                 context 'when item does not have category before update' do
                     let(:item_category) { nil }
+
+                    before do
+                        allow(Item.client).to receive(:query)
+                    end
         
                     it 'does not trigger item_category deletion' do
                         expect(item_category).not_to receive(:delete)
@@ -78,6 +77,7 @@ RSpec.describe Item do
                 it 'returns item with new category' do
                     allow(item_category).to receive(:update)
 
+                    expect(Item.client).to receive(:query)
                     result = item.update(name, price, category)
         
                     expect(result.id).to eq(id)
@@ -89,6 +89,7 @@ RSpec.describe Item do
                 context 'when item has category before update' do
                     before do
                         item.category = double
+                        allow(Item.client).to receive(:query)
                     end
 
                     it 'triggers ItemCategory update' do
@@ -99,6 +100,10 @@ RSpec.describe Item do
 
                 context 'when item does not have category before update' do
                     let(:item_category) { nil }
+
+                    before do
+                        allow(Item.client).to receive(:query)
+                    end
 
                     it 'triggers ItemCategory creation' do
                         expect(ItemCategory).to receive(:create)
@@ -115,7 +120,7 @@ RSpec.describe Item do
             it 'returns nil and does not trigger db' do
                 item = Item.new(id, name, price)
 
-                expect(db_connector).not_to receive(:query)
+                expect(Item.client).not_to receive(:query)
                 result = item.update(name, price, category)
                 expect(result).to eq(nil)
             end
@@ -125,24 +130,22 @@ RSpec.describe Item do
     describe '.delete' do
         let(:item) { Item.new(1, "Supermie", 2000) }
         let(:item_category) { double }
-        let(:db_connector) { double }
 
         before do
             allow(ItemCategory).to receive(:find_by_item).with(item)
                 .and_return(item_category)
-            allow(Model).to receive(:client).and_return(db_connector)
         end
 
         it 'triggers deletion query' do
             allow(item_category).to receive(:delete)
 
-            expect(db_connector).to receive(:query)
+            expect(Item.client).to receive(:query)
             item.delete
         end
 
         context 'when item has category before deletion' do
             it 'triggers item_category deletion' do
-                expect(db_connector).to receive(:query)
+                expect(Item.client).to receive(:query)
                 expect(item_category).to receive(:delete)
                 item.delete
             end
@@ -152,7 +155,7 @@ RSpec.describe Item do
             let(:item_category) { nil }
 
             before do
-                expect(db_connector).to receive(:query)
+                expect(Item.client).to receive(:query)
             end
 
             it 'does not trigger item_category deletion' do

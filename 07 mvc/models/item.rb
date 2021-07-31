@@ -38,7 +38,7 @@ class Item < Model
         item_category = ItemCategory.find_by_item(self)
         item_category.delete unless item_category.nil?
 
-        Model.client.query("delete from items where id='#{@id}'")
+        Item.client.query("delete from items where id='#{@id}'")
     end
 
     def self.create(name, price, category=nil)
