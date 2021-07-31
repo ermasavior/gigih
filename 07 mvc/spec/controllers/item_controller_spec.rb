@@ -37,4 +37,37 @@ RSpec.describe ItemController do
             item_controller.item_detail(params)
         end
     end
+
+    describe '.create_item_form' do
+        let(:file_path) { "./views/items/create.erb" }
+        let(:categories) { [ double ] }
+
+        it 'triggers data from Item model' do
+            expect(File).to receive(:read).with(file_path).and_return(file)
+            expect(ERB).to receive(:new).with(file).and_return(renderer)
+            expect(renderer).to receive(:result).with(Binding)
+
+            expect(Category).to receive(:find_all_categories).and_return(categories)
+
+            item_controller.create_item_form
+        end
+    end
+
+    describe '.update_item_form' do
+        let(:file_path) { "./views/items/update.erb" }
+        let(:item) { double }
+        let(:categories) { [ double ] }
+        let(:params) { {id: 12} }
+
+        it 'triggers data from Item model' do
+            expect(File).to receive(:read).with(file_path).and_return(file)
+            expect(ERB).to receive(:new).with(file).and_return(renderer)
+            expect(renderer).to receive(:result).with(Binding)
+
+            expect(Item).to receive(:find_by_id).with(params['id']).and_return(item)
+            expect(Category).to receive(:find_all_categories).and_return(categories)
+
+            item_controller.update_item_form(params)
+        end
+    end
 end
