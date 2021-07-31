@@ -90,5 +90,55 @@ RSpec.describe ItemCategory do
     end
 
     describe '.find_by_item' do
+        context 'when parameters are valid' do
+            context 'when item category is found' do
+                let(:item) { Item.create("Martabak", 100000)}
+                let(:category) { Category.create("Snack")}
+
+                before do
+                    ItemCategory.create(item, category)
+                end
+
+                it 'returns item_category' do
+                    item_category = ItemCategory.find_by_item(item)
+                    expect(item_category.item).to eq(item)
+                    expect(item_category.category.id).to eq(category.id)
+                    expect(item_category.category.name).to eq(category.name)
+                end
+
+                after do
+                    item.delete
+                    category.delete
+                end
+            end
+
+            context 'when item category is not found' do
+                let(:item) { Item.create("Martabak", 100000)}
+
+                before do
+                    item
+                end
+
+                it 'returns nil' do
+                    item_category = ItemCategory.find_by_item(item)
+                    expect(item_category).to be(nil)
+                end
+
+                after do
+                    item.delete
+                end
+            end
+        end
+
+        context 'when parameters are invalid' do
+            let(:item) { nil }
+            
+            it 'returns nil' do
+                expect(ItemCategory.client).not_to receive(:query)
+
+                item_category = ItemCategory.find_by_item(item)
+                expect(item_category).to be(nil)
+            end
+        end
     end
 end
