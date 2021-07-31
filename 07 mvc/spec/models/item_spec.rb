@@ -45,11 +45,10 @@ RSpec.describe Item do
                     expect(db_connector).to receive(:query)
 
                     result = item.update(name, price, category)
-                    expected_result = Item.new(id, name, price)
 
-                    expect(result.id).to eq(expected_result.id)
-                    expect(result.name).to eq(expected_result.name)
-                    expect(result.price).to eq(expected_result.price)
+                    expect(result.id).to eq(id)
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
                     expect(result.category).to be(category)
                 end
 
@@ -79,11 +78,10 @@ RSpec.describe Item do
                     allow(item_category).to receive(:update)
 
                     result = item.update(name, price, category)
-                    expected_result = Item.new(id, name, price, category)
         
-                    expect(result.id).to eq(expected_result.id)
-                    expect(result.name).to eq(expected_result.name)
-                    expect(result.price).to eq(expected_result.price)
+                    expect(result.id).to eq(id)
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
                     expect(result.category).to be(category)
                 end
 
@@ -162,6 +160,67 @@ RSpec.describe Item do
             it 'does not trigger item_category deletion' do
                 expect(item_category).not_to receive(:delete)
                 item.delete
+            end
+        end
+    end
+
+    describe '.create' do
+        let(:id) { 1 }
+        let(:name) { "Indomie" }
+        let(:price) { 40000 }
+        let(:category) { double }
+        let(:db_connector) { double }
+
+        context 'when parameters are valid' do
+            context 'when create category is nil' do
+                it 'triggers item creation query' do
+                    expect(Item.client).to receive(:query).once
+                    expect(Item.client).to receive(:last_id)
+
+                    result = Item.create(name, price)
+                end
+
+                it 'creates item with no category' do
+                    allow(Item.client).to receive(:query)
+                    allow(Item.client).to receive(:last_id)
+
+                    result = Item.create(name, price)
+
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
+                    expect(result.category).to be(nil)
+                end
+            end
+
+            context 'when create category is not nil' do
+                it 'triggers ItemCategory creation' do            
+                    allow(Item.client).to receive(:query)
+                    allow(Item.client).to receive(:last_id)
+
+                    expect(ItemCategory).to receive(:create)
+                    result = Item.create(name, price, category)
+                end
+
+                it 'creates item with category' do
+                    allow(ItemCategory).to receive(:create)        
+                    expect(Item.client).to receive(:query).once
+                    expect(Item.client).to receive(:last_id)
+
+                    result = Item.create(name, price, category)
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
+                    expect(result.category).to eq(category)
+                end
+            end
+        end
+
+        context 'when parameters are invalid' do
+            let(:name) { nil }
+            let(:price) { nil }
+
+            it 'does not create item' do
+                expect(Item.client).not_to receive(:query)
+                Item.create(name, price, category)
             end
         end
     end
