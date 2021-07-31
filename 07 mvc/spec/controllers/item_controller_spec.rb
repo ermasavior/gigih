@@ -21,4 +21,20 @@ RSpec.describe ItemController do
             item_controller.list_items
         end
     end
+
+    describe '.item_detail' do
+        let(:file_path) { "./views/items/show.erb" }
+        let(:item) { double }
+        let(:params) { {id: 12} }
+
+        it 'triggers data from Item model' do
+            expect(File).to receive(:read).with(file_path).and_return(file)
+            expect(ERB).to receive(:new).with(file).and_return(renderer)
+            expect(renderer).to receive(:result).with(Binding)
+
+            expect(Item).to receive(:find_by_id).with(params['id']).and_return(item)
+
+            item_controller.item_detail(params)
+        end
+    end
 end
