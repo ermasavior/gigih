@@ -132,6 +132,30 @@ RSpec.describe Category do
     end
 
     describe '.find_by_id_with_items' do
+        let(:id) { 1 }
+        let(:category) { Category.new(id, "main dish") }
+        let(:expected_results) { Category.client.query("select * from categories left join item_categories on categories.id=item_categories.category_id where categories.id = #{id}") }
+
+        context 'when parameter is valid' do
+            it 'returns categories with its items' do
+                result = Category.find_by_id_with_items(id)
+                expect(result.id).to eq(category.id) 
+                expect(result.name).to eq(category.name)
+
+                result.items.zip(expected_results) do |result, expected|
+                    expect(result.id).to eq(expected['item_id'])
+                end
+            end
+        end
+
+        context 'when parameter is not valid' do
+            let(:id) { nil }
+
+            it 'returns nil' do
+                category = Category.find_by_id_with_items(id)
+                expect(category).to be(nil)
+            end
+        end
     end
 
     describe '.find_all_categories' do

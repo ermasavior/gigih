@@ -47,6 +47,8 @@ class Category < Model
     end
 
     def self.find_by_id_with_items(id)
+        return if id.nil?
+
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
         return if data.nil?
