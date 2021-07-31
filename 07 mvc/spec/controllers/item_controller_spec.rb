@@ -117,4 +117,17 @@ RSpec.describe ItemController do
             item_controller.update_item(params)
         end
     end
+
+    describe '.delete_item' do
+        let(:params) { {'id'=> 12} }
+        let(:item) { double }
+
+        it 'triggers Item deletion' do
+            expect(Item).to receive(:find_by_id).with(params['id'])
+                .and_return(item)
+            expect(item).to receive(:delete)
+
+            item_controller.delete_item(params)
+        end
+    end
 end
