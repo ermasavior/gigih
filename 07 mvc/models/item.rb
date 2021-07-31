@@ -11,8 +11,16 @@ class Item < Model
         @category = category
     end
 
+    def valid?
+        return false if @name.nil?
+        return false if @price.nil?
+        true
+    end
+
     def update(name, price, category)
         @name, @price, @category = name, price, category
+        return unless valid?
+
         Model.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
 
         item_category = ItemCategory.find_by_item(self)
@@ -34,13 +42,16 @@ class Item < Model
     end
 
     def self.create(name, price, category=nil)
+        item = Item.new(nil, name, price)
+        return unless item.valid?
+
         client.query("insert into items (name, price) values ('#{name}', '#{price}')")
-        item_id = self.client.last_id
-        item = Item.new(item_id, name, price, category)
+        item.id = self.client.last_id
+        item.category = category
 
         return item if category.nil?
 
-        ItemCategory.new(item, category).save
+        ItemCategory.create(item, category)
         item
     end
 

@@ -8,6 +8,12 @@ class Category < Model
         @name = name
     end
 
+    def valid?
+        return false if @id.nil?
+        return false if @name.nil?
+        true
+    end
+
     def self.find_by_id(id)
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
