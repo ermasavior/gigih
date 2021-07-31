@@ -37,7 +37,7 @@ class Category < Model
         items.each do |item|
             ItemCategory.new(item, self).delete
         end
-        Model.client.query("delete from categories where id='#{@id}'")
+        Category.client.query("delete from categories where id='#{@id}'")
     end
 
     def self.find_by_id(id)

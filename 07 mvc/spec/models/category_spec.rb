@@ -68,6 +68,41 @@ RSpec.describe Category do
         end
     end
 
+    describe '.delete' do
+        let(:items) { [double] }
+        let(:category) { Category.new(4, "snack", items) }
+        let(:item_category) { double }
+
+        it 'triggers deletion query' do
+            allow(ItemCategory).to receive(:new).with(items[0], category)
+                .and_return(item_category)
+            allow(item_category).to receive(:delete)
+
+            expect(Category.client).to receive(:query)
+            category.delete
+        end
+
+        context 'when category has items' do
+            it 'triggers ItemCategory deletion' do
+                expect(ItemCategory).to receive(:new).with(items[0], category)
+                    .and_return(item_category)
+                expect(item_category).to receive(:delete)
+
+                category.delete
+            end
+        end
+
+        context 'when category does not have items' do
+            let(:items) { [] }
+
+            it 'does not trigger ItemCategory deletion' do
+                expect(ItemCategory).not_to receive(:new)
+
+                category.delete
+            end
+        end
+    end
+
     describe '.find_by_id' do
     end
 
