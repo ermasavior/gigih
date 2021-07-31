@@ -25,7 +25,7 @@ RSpec.describe ItemController do
     describe '.item_detail' do
         let(:file_path) { "./views/items/show.erb" }
         let(:item) { double }
-        let(:params) { {id: 12} }
+        let(:params) { {'id'=> 12} }
 
         it 'triggers data from Item model' do
             expect(File).to receive(:read).with(file_path).and_return(file)
@@ -57,7 +57,7 @@ RSpec.describe ItemController do
         let(:file_path) { "./views/items/update.erb" }
         let(:item) { double }
         let(:categories) { [ double ] }
-        let(:params) { {id: 12} }
+        let(:params) { {'id'=> 12} }
 
         it 'triggers data from Item model' do
             expect(File).to receive(:read).with(file_path).and_return(file)
@@ -68,6 +68,53 @@ RSpec.describe ItemController do
             expect(Category).to receive(:find_all_categories).and_return(categories)
 
             item_controller.update_item_form(params)
+        end
+    end
+
+    describe '.create_item' do
+        let(:id) { 12 }
+        let(:name) { "Pisang" }
+        let(:price) { 12000 }
+        let(:category_id) { 4 }
+        let(:params) {
+            {
+                'id'=>id, 'name'=>name, 'price'=>price, 'category_id'=>category_id
+            }
+        }
+        let(:category) { double }
+        let(:item) { double }
+
+        it 'triggers Category finder and Item create' do
+            expect(Category).to receive(:find_by_id).with(category_id)
+                .and_return(category)
+            expect(Item).to receive(:create).with(name, price, category)
+                .and_return(item)
+
+            item_controller.create_item(params)
+        end
+    end
+
+    describe '.update_item' do
+        let(:id) { 12 }
+        let(:name) { "Pisang Madu" }
+        let(:price) { 120000 }
+        let(:category_id) { 4 }
+        let(:params) {
+            {
+                'id'=>id, 'name'=>name, 'price'=>price, 'category_id'=>category_id
+            }
+        }
+        let(:category) { double }
+        let(:item) { double }
+
+        it 'triggers Category finder and Item create' do
+            expect(Category).to receive(:find_by_id).with(category_id)
+                .and_return(category)
+            expect(Item).to receive(:find_by_id).with(id)
+                .and_return(item)
+            expect(item).to receive(:update).with(name, price, category)
+
+            item_controller.update_item(params)
         end
     end
 end
