@@ -233,31 +233,42 @@ RSpec.describe Item do
         context 'when item is found' do
             context 'when item has category' do
                 let(:category) { Category.find_by_id(1) }
+                let(:item) { Item.create(name, price, category) }
+
+                before do
+                    item
+                end
 
                 it 'returns item with category' do
-                    item = Item.create(name, price, category)
-
                     result = Item.find_by_id(item.id)
 
                     expect(result.name).to eq(name)
                     expect(result.price).to eq(price)
                     expect(result.category.id).to eq(category.id)
-
-                    result.delete
+                end
+                
+                after do
+                    item.delete
                 end
             end
 
             context 'when item does not have category' do
-                it 'returns item with no category' do
-                    item = Item.create(name, price)
+                let(:item) { Item.create(name, price) }
 
+                before do
+                    item
+                end
+
+                it 'returns item with no category' do
                     result = Item.find_by_id(item.id)
 
                     expect(result.name).to eq(name)
                     expect(result.price).to eq(price)
                     expect(result.category).to be(nil)
+                end
 
-                    result.delete
+                after do
+                    item.delete
                 end
             end
         end
