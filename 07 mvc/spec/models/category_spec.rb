@@ -104,6 +104,31 @@ RSpec.describe Category do
     end
 
     describe '.find_by_id' do
+        let(:id) { Category.client.last_id }
+        let(:name) { "Kue basah" }
+
+        context 'when category is found' do
+            before do
+                Category.create("Kue basah")
+            end
+
+            it 'returns category' do
+                category = Category.find_by_id(id)
+                expect(category.id).to eq(id)
+                expect(category.name).to eq(name)
+            end
+
+            after do
+                Category.new(id, name).delete              
+            end
+        end
+
+        context 'when category is not found' do
+            it 'returns nil' do
+                category = Category.find_by_id(id)
+                expect(category).to be(nil)
+            end
+        end
     end
 
     describe '.find_by_id_with_items' do
