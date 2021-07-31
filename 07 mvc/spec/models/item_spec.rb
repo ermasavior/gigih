@@ -1,4 +1,5 @@
 require_relative '../../models/item'
+require_relative '../../models/category'
 
 RSpec.describe Item do
     describe '.valid?' do
@@ -221,6 +222,52 @@ RSpec.describe Item do
             it 'does not create item' do
                 expect(Item.client).not_to receive(:query)
                 Item.create(name, price, category)
+            end
+        end
+    end
+
+    describe '.find_by_id' do
+        let(:name) { "Gulali" }
+        let(:price) { 5000 }
+
+        context 'when item is found' do
+            context 'when item has category' do
+                let(:category) { Category.find_by_id(1) }
+
+                it 'returns item with category' do
+                    item = Item.create(name, price, category)
+
+                    result = Item.find_by_id(item.id)
+
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
+                    expect(result.category.id).to eq(category.id)
+
+                    result.delete
+                end
+            end
+
+            context 'when item does not have category' do
+                it 'returns item with no category' do
+                    item = Item.create(name, price)
+
+                    result = Item.find_by_id(item.id)
+
+                    expect(result.name).to eq(name)
+                    expect(result.price).to eq(price)
+                    expect(result.category).to be(nil)
+
+                    result.delete
+                end
+            end
+        end
+
+        context 'when is not found' do
+            let(:id) { -1 }
+
+            it 'returns nil' do
+                result = Item.find_by_id(id)
+                expect(result).to be(nil)
             end
         end
     end

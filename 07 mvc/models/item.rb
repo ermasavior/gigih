@@ -21,7 +21,7 @@ class Item < Model
         @name, @price, @category = name, price, category
         return unless valid?
 
-        Model.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
+        Item.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
 
         item_category = ItemCategory.find_by_item(self)
         if @category.nil?
