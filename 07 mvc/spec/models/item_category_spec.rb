@@ -63,6 +63,30 @@ RSpec.describe ItemCategory do
     end
 
     describe '.create' do
+        let(:item) { Item.new(100, "Sate", 2000) }
+
+        context 'when parameters are valid' do
+            let(:new_category) { Category.new(2, "beverage") }
+
+            it 'triggers creation query' do
+                expect(ItemCategory.client).to receive(:query)
+
+                item_category = ItemCategory.create(item, new_category)
+                expect(item_category.item).to eq(item)
+                expect(item_category.category).to eq(new_category)
+            end
+        end
+
+        context 'when parameters are invalid' do
+            let(:new_category) { nil }
+            
+            it 'does not creation update query' do
+                expect(ItemCategory.client).not_to receive(:query)
+
+                item_category = ItemCategory.create(item, new_category)
+                expect(item_category).to be(nil)
+            end
+        end
     end
 
     describe '.find_by_item' do
