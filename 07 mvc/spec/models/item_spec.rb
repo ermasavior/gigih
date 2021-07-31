@@ -296,4 +296,17 @@ RSpec.describe Item do
             end
         end
     end
+
+    describe '.find_all_items_with_category' do
+        let(:items) { Item.client.query("select * from items left join item_categories on items.id=item_categories.item_id") }
+
+        it 'returns items with its category' do
+            results = Item.find_all_items_with_category
+            results.zip(items) do |result, item|
+                expect(result.name).to eq(item["name"])
+                expect(result.price).to eq(item["price"])
+                expect(result.category.id).to eq(item["category_id"]) unless result.category.nil?
+            end
+        end
+    end
 end
