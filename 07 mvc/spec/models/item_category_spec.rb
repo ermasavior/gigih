@@ -52,6 +52,14 @@ RSpec.describe ItemCategory do
     end
 
     describe '.delete' do
+        let(:item) { Item.new(100, "Sate", 2000) }
+        let(:category) { Category.new(1, "main dish") }
+        let(:item_category) { ItemCategory.new(item, category) }
+
+        it 'triggers deletion query' do
+            expect(ItemCategory.client).to receive(:query)
+            item_category.delete
+        end
     end
 
     describe '.create' do

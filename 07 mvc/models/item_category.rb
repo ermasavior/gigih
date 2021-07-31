@@ -25,7 +25,7 @@ class ItemCategory < Model
     end
 
     def delete
-        Model.client.query("delete from item_categories where item_id='#{@item.id}' and category_id='#{@category.id}'")
+        ItemCategory.client.query("delete from item_categories where item_id='#{@item.id}' and category_id='#{@category.id}'")
     end
 
     def self.create(item, category)
