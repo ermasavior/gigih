@@ -39,3 +39,12 @@ end
 get '/categories/:id/show' do
     category_controller.category_detail(params)
 end
+
+get '/categories/new' do
+    category_controller.create_category_form
+end
+
+post '/categories/create' do
+    category_controller.create_category(params)
+    redirect '/'
+end

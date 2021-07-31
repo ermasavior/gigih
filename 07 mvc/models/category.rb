@@ -11,9 +11,17 @@ class Category < Model
     end
 
     def valid?
-        return false if @id.nil?
         return false if @name.nil?
         true
+    end
+
+    def self.create(name)
+        category = Category.new(nil, name)
+        return unless category.valid?
+
+        client.query("insert into categories(name) values ('#{category.name}')")
+        category.id = self.client.last_id
+        category
     end
 
     def self.find_by_id(id)
