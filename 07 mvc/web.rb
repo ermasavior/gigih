@@ -57,3 +57,8 @@ post '/categories/:id/update' do
     category_controller.update_category(params)
     redirect '/'
 end
+
+post '/categories/:id/delete' do
+    category_controller.delete_category(params)
+    redirect '/'
+end

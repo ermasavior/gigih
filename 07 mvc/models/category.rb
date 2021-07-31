@@ -32,6 +32,14 @@ class Category < Model
         self
     end
 
+    def delete
+        find_items if items.empty?
+        items.each do |item|
+            ItemCategory.new(item, self).delete
+        end
+        Model.client.query("delete from categories where id='#{@id}'")
+    end
+
     def self.find_by_id(id)
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
@@ -44,7 +52,7 @@ class Category < Model
         return if data.nil?
 
         category = Category.new(data["id"], data["name"])
-        category.items = Item.find_by_category(category)
+        category.items = category.find_items
         category
     end
 
@@ -57,5 +65,10 @@ class Category < Model
         end
 
         categories
+    end
+
+    def find_items
+        @items = Item.find_by_category(self)
+        @items
     end
 end

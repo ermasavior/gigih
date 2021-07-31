@@ -26,4 +26,9 @@ class CategoryController
         category = Category.find_by_id(params['id'])
         category.update(params['name'])
     end
+
+    def delete_category(params)
+        category = Category.find_by_id(params['id'])
+        category.delete
+    end
 end
