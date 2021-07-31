@@ -6,13 +6,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>           
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script> 
-
-    <script>
-        $('.delete').on('click', function() {
-            alert('click');
-            //here would be the code to send the DELETE request ?
-        });
-    </script>
 </head>
 
 <body>
@@ -20,6 +13,45 @@
         <div class="nav-wrapper">
         <a href="/" class="brand-logo center">Food OMS</a>
     </nav>
+
+    <div class="container">
+        <h3 class="center-align">Categories</h3>
+        <p class="center-align">
+            <a class="waves-effect waves-light btn-small" href="/categories/new">Add new category</a>
+        </p>
+    
+        <table class="highlight centered">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categories.each do |category| %>
+                <tr>
+                    <td><%= category.name %></td>
+                    <td>
+                        <a href="/categories/<%= category.id %>/show">Show Items</a>
+                    </td>
+                    <td>
+                        <a href="/categories/<%= category.id %>/edit">Edit</a>
+                    </td>
+                    <td>
+                        <form action="/categories/<%= category.id %>/delete" method="POST">
+                            <button type="submit" class="btn-small waves-light red">
+                                delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+
     <div class="container">
         <h3 class="center-align">Items</h3>
         <p class="center-align">
