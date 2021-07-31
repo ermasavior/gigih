@@ -28,7 +28,7 @@ class Category < Model
         @name = name
         return unless valid?
 
-        Model.client.query("update categories set name='#{@name}' where id='#{@id}'")
+        Category.client.query("update categories set name='#{@name}' where id='#{@id}'")
         self
     end
 
@@ -37,7 +37,7 @@ class Category < Model
         items.each do |item|
             ItemCategory.new(item, self).delete
         end
-        Model.client.query("delete from categories where id='#{@id}'")
+        Category.client.query("delete from categories where id='#{@id}'")
     end
 
     def self.find_by_id(id)
@@ -47,6 +47,8 @@ class Category < Model
     end
 
     def self.find_by_id_with_items(id)
+        return if id.nil?
+
         raw_data = client.query("select * from categories where id='#{id}'")
         data = raw_data.first
         return if data.nil?

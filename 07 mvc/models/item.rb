@@ -21,7 +21,7 @@ class Item < Model
         @name, @price, @category = name, price, category
         return unless valid?
 
-        Model.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
+        Item.client.query("update items set name='#{@name}', price='#{@price}' where id='#{@id}'")
 
         item_category = ItemCategory.find_by_item(self)
         if @category.nil?
@@ -38,7 +38,7 @@ class Item < Model
         item_category = ItemCategory.find_by_item(self)
         item_category.delete unless item_category.nil?
 
-        Model.client.query("delete from items where id='#{@id}'")
+        Item.client.query("delete from items where id='#{@id}'")
     end
 
     def self.create(name, price, category=nil)
@@ -72,7 +72,7 @@ class Item < Model
     end
 
     def self.find_by_category(category)
-        return unless category.valid?
+        return [] if category.nil?
 
         raw_data = client.query("select items.id, items.name, items.price
                                  from items

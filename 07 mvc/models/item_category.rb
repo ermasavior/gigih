@@ -20,12 +20,12 @@ class ItemCategory < Model
         @category = category
         return unless valid?
 
-        Model.client.query("update item_categories set category_id='#{@category.id}' where item_id='#{@item.id}'")
+        ItemCategory.client.query("update item_categories set category_id='#{@category.id}' where item_id='#{@item.id}'")
         self
     end
 
     def delete
-        Model.client.query("delete from item_categories where item_id='#{@item.id}' and category_id='#{@category.id}'")
+        ItemCategory.client.query("delete from item_categories where item_id='#{@item.id}' and category_id='#{@category.id}'")
     end
 
     def self.create(item, category)
@@ -37,7 +37,9 @@ class ItemCategory < Model
     end
 
     def self.find_by_item(item)
-        raw_data = client.query("select * from item_categories where item_id='#{item.id}'")
+        return if item.nil?
+
+        raw_data = self.client.query("select * from item_categories where item_id='#{item.id}'")
         data = raw_data.first
         return if data.nil?
 
