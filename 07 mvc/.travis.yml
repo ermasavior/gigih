@@ -1,0 +1,16 @@
+language: python
+python:
+- '2.7'
+branches:
+  only:
+  - master
+before_install:
+- openssl aes-256-cbc -K $encrypted_b698c9e04f42_key -iv $encrypted_b698c9e04f42_iv
+  -in id_ed25519.enc -out ~\/.ssh/id_ed25519 -d
+- chmod 400 ~/.ssh/id_ed25519.enc
+install:
+- pip install ansible
+jobs:
+  include:
+  - stage: deploy-staging
+    script: echo "Hello World"
